@@ -5,7 +5,8 @@ import { useEffect } from "react";
 import { data, useNavigate } from "react-router";
 import Cookies from "js-cookie";
   interface auth {
-    access_token : string
+    access_token : string;
+    userId : number
   }
 
   interface UserData{
@@ -25,12 +26,15 @@ import Cookies from "js-cookie";
 
     const {mutate, isSuccess} = useMutation({
       mutationFn : LoginBackend,
-      onSuccess : (data) => Cookies.set('token', data.data.access_token, {expires : 7})
+      onSuccess : (data) => {
+        Cookies.set('token', data.data.access_token, {expires : 7})
+        Cookies.set('userId',data.data.userId + "", {expires : 7})
+      }
     }) 
 
     const navigate = useNavigate();
 
-
+    
 
     const submitHandler = (data : UserData) => {
         mutate(data)

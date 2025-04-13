@@ -5,8 +5,9 @@ import Home from "./pages/Home";
 import Signin from "./pages/Signin";
 import Register from "./pages/Register";
 import Notelist from "./pages/Notelist";
-import NoteEditor from "./pages/NoteEditor";
 import Users from "./pages/Users";
+import NoteEdit from "./pages/NoteEdit";
+import NoteAdd from "./pages/NoteAdd";
 
 const queryClient = new QueryClient()
 
@@ -17,7 +18,8 @@ function App() {
 			<Route path="signin" element={<Signin/>}></Route>
 			<Route path="register" element={<Register/>}></Route>
 			<Route path="note" element={<Notelist/>}></Route>
-			<Route path="edit" element={<NoteEditor/>}></Route>
+			<Route path="edit/:id" element={<NoteEdit/>}></Route>
+			<Route path="addnote" element={<NoteAdd/>}></Route>
 			<Route path="user/:id" element={<Users/>}></Route>
 
 			{/* <Route path="product" element={<Product />} />

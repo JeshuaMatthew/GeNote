@@ -2,6 +2,9 @@
 import { useState, useEffect } from 'react'; // Import useState and useEffect
 import Note from "../components/Note";
 import NoteListSkeleton from '../components/NoteListSkeleton.tsx'; // Import the skeleton
+import GenoteApi, { setAuthTokenOnGenoteApi } from '../utils/GenoteApi.tsx';
+import Cookies from 'js-cookie';
+import { useQuery } from '@tanstack/react-query';
 
 interface NoteData {
   id: string; // Add an ID for the key prop
@@ -10,40 +13,64 @@ interface NoteData {
   body: string;
 }
 
+interface NoteAttributes{
+  title : string;
+  id : string;
+  body : string
+  user_id : string
+}
 
+interface Notes {
+  notes : NoteAttributes[]
+}
 
-// Sample Data (add unique IDs)
-const sampleNotes: NoteData[] = [
-  { id: 'n1', title: "Plan Weekend Trip", color: "FFEEEE", body: "Research destinations, book accommodation, check weather." },
-  { id: 'n2', title: "Grocery List", color: "DEB7B7", body: "Milk, Eggs, Bread, Apples, Chicken Breast." },
-  { id: 'n3', title: "Project Ideas", color: "A84C4C", body: "Note-taking app enhancements, Portfolio update, Blog post on Tailwind." },
-  { id: 'n4', title: "Meeting Notes", color: "FFEEEE", body: "Discussed Q3 goals, assigned action items. Follow up next week." },
-  { id: 'n5', title: "Workout Plan", color: "DEB7B7", body: "Mon: Chest/Tris, Wed: Back/Bis, Fri: Legs/Shoulders." },
-  { id: 'n6', title: "Book Recommendations", color: "A84C4C", body: "Atomic Habits, The Pragmatic Programmer, Sapiens." },
-];
+function getRandomInt(max : number) {
+  return Math.floor(Math.random() * max);
+}
 
+const handleGetNote = async () => {
+  setAuthTokenOnGenoteApi(Cookies.get('token'))
+  return await GenoteApi.get<Notes>("api/notes/");
+} 
+
+const selectRandColor = (): string =>{
+  const colorSelection : string[] = ["FFEEEE", "DEB7B7", "fea2a2"]
+  return colorSelection[getRandomInt(3)]
+}
+
+const generateRandColor = (fetchedNote : Notes): NoteData[] =>{
+    let newNoteDat : NoteData[] = []
+    for(let i = 0; i < fetchedNote.notes.length; i++){
+      newNoteDat.push({
+        id : fetchedNote.notes[i].id,
+        title : fetchedNote.notes[i].title,
+        body : fetchedNote.notes[i].body,
+        color : selectRandColor()
+      })
+    }
+
+    return newNoteDat;
+}
 
 const Notelist = () => {
   const [notes, setNotes] = useState<NoteData[]>([]); // Initialize notes as empty
-  const [isLoading, setIsLoading] = useState<boolean>(true); // Start in loading state
+
+  const userId = Cookies.get('userId')
+
+  const getNoteData = useQuery({
+    queryKey : ['notes', userId],
+    queryFn : handleGetNote
+  })
 
   useEffect(() => {
-    // Simulate fetching data
-    const fetchNotes = () => {
-      console.log("Fetching notes...");
-      // Replace this timeout with your actual API call
-      setTimeout(() => {
-        setNotes(sampleNotes); // Set the fetched notes
-        setIsLoading(false); // Turn off loading state
-        console.log("Notes fetched!");
-      }, 2000); // Simulate a 2-second delay
-    };
+    if(getNoteData.isFetched){
 
-    fetchNotes();
-
-    // Cleanup function (optional) if your fetch needs cancellation
-    // return () => { /* cancel fetch if needed */ };
-  }, []); // Empty dependency array means this runs once on mount
+      if(getNoteData.data?.data.notes){
+        setNotes(generateRandColor(getNoteData.data.data))
+        console.log("masuk")
+      }
+    }
+  }, [getNoteData.isFetched]);
 
   return (
     <div className="flex flex-col min-h-screen mt-10 space-y-8 pb-10"> {/* Added pb-10 */}
@@ -65,7 +92,7 @@ const Notelist = () => {
       </div>
 
       {/* --- Conditional Rendering for Notes/Skeleton --- */}
-      {isLoading ? (
+      {getNoteData.isFetching ? (
         <NoteListSkeleton /> // Show Skeleton when loading
       ) : (
         // Show actual notes when loaded
@@ -74,14 +101,14 @@ const Notelist = () => {
           {notes.length > 0 ? (
              notes.map((note) => (
                 <Note
-                    key={note.id} // Use unique ID for key
+                    id={note.id} // Use unique ID for key
                     title={note.title}
                     body={note.body}
                     color={note.color} // Pass color prop
                 />
             ))
           ) : (
-            <p className="text-center text-gray-500 col-span-full">No notes found.</p> // Handle empty state
+            <p className="text-center mt-40 text-gray-500 col-span-full">You haven't added any notes yet</p> // Handle empty state
           )}
         </div>
       )}

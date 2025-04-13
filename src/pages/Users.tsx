@@ -13,21 +13,24 @@ interface EditFormFields{
   name : string;
   email : string;
   password : string;
+  id :  number
 }
 
-interface UserData{
+interface UserType{
   user : EditFormFields
 }
+
+
   
   
-  const BackendHandleEdit = async (id : string | undefined,data : UserData) =>{
+  const BackendHandleEdit = async (id : string | undefined ,data : EditFormFields) =>{
     setAuthTokenOnGenoteApi(Cookies.get('token'))
     return await GenoteApi.put("api/users/"+ id, data);
   }
 
   const BackendHandleGet = async (id : string | undefined) =>{
     setAuthTokenOnGenoteApi(Cookies.get('token'))
-    return await GenoteApi.get<UserData>("api/users/" + id);
+    return await GenoteApi.get<UserType>("api/users/" + id);
   }
 
 
@@ -41,12 +44,12 @@ const borderColor = 'border-gray-300';
 
 const Users: React.FC = () => {
 
-    const {id} = useParams();
+    const id = Cookies.get('userId')
 
     const {register, setValue ,handleSubmit,formState : {errors}} = useForm<EditFormFields>()
 
     const {mutate, isSuccess} = useMutation({
-        mutationFn : BackendHandleEdit
+        mutationFn : (data : EditFormFields) => BackendHandleEdit(id,data)
       });
 
     const getUserDetail = useQuery({
@@ -56,11 +59,7 @@ const Users: React.FC = () => {
 
     const submitHandler = (data : EditFormFields) => {
 
-
-        const editedUserData : UserData = {
-            user : data
-        }
-        mutate(editedUserData)
+        mutate(data)
     }
 
     
@@ -69,7 +68,7 @@ const Users: React.FC = () => {
     
     
     useEffect(() =>{
-        if(isEditing && getUserDetail.data?.data.user){
+        if(isEditing && getUserDetail.data?.data){
             setValue("name", getUserDetail.data?.data.user.name);
             setValue("email", getUserDetail.data?.data.user.email);
         }
