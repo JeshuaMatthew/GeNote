@@ -1,6 +1,6 @@
 import ReactMarkdown from "react-markdown";
 import { useNavigate } from 'react-router-dom';
-import GenoteApi, { setAuthTokenOnGenoteApi } from "../utils/GenoteApi";
+import GenoteApi, {  setAuthTokenOnGenoteApi } from "../utils/GenoteApi";
 import Cookies from "js-cookie";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect } from "react";

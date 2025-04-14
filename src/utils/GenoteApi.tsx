@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const GenoteApi = axios.create({
-    baseURL: "http://localhost:8000/",
+    baseURL: "localhost:8000/",
 });
 
 export const setAuthTokenOnGenoteApi = (token: string | undefined) => {
