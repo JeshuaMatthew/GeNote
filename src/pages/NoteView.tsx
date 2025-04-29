@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse, AxiosError } from 'axios';
 import ReactMarkdown from 'react-markdown';
-import { motion, AnimatePresence } from 'framer-motion'; // Import motion
+import { motion } from 'framer-motion'; // Import motion
 
 import GenoteApi from '../utils/GenoteApi';
 import { useAuth } from '../utils/AuthProvider';
@@ -137,7 +137,7 @@ const NoteView: React.FC = () => {
         number
     >({
         mutationFn: (idToDelete) => handleDeleteNote(idToDelete, getToken()),
-        onSuccess: (data, deletedId) => {
+        onSuccess: (deletedId) => {
             console.log(`Note ${deletedId} deleted successfully.`);
             queryClient.invalidateQueries({ queryKey: ['notes'], exact: false }); // Invalidate potentially related lists
             queryClient.removeQueries({ queryKey: ['note', deletedId] }); // Remove specific note cache

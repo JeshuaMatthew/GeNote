@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, FC } from 'react';
+import { useState, useEffect, useRef, FC } from 'react';
 import { useNavigate, NavigateFunction } from 'react-router-dom'; // Removed useMatch as it wasn't used
 import { useAuth } from '../utils/AuthProvider';
 import { motion, AnimatePresence } from 'framer-motion'; // Import motion

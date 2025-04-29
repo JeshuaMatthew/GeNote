@@ -13,10 +13,7 @@ interface NoteData {
 const Note: React.FC<NoteData> = (props) => {
   const navigate = useNavigate();
 
-  // Use inline style for the dynamic border color based on the prop
-  const cardStyle = {
-    borderColor: `${props.color}` // Assumes props.color is a valid hex code without '#'
-  };
+
 
   // Define base styles and hover effects using Tailwind classes
   const noteCardClasses = `

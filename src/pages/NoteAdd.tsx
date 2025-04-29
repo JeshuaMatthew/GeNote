@@ -133,7 +133,6 @@ const NoteAdd: React.FC = () => {
         data: folderDataResponse,
         isLoading: isLoadingFolder,
         isError: isFolderError,
-        error: folderError,
     } = useQuery<AxiosResponse<ApiFolder>, AxiosError<ApiErrorData>>({
         queryKey: ['folder', folderId],
         queryFn: () => handleGetFolderById(folderId as number, getToken()),

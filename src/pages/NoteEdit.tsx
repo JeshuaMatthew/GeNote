@@ -144,7 +144,6 @@ const NoteEdit: React.FC = () => {
     const {
         mutate: updateNote,
         isPending: isSaving,
-        error: saveErrorObject, // Can be used if needed, but errorMessage state is primary
     } = useMutation<
         AxiosResponse<ApiNote>,
         AxiosError<ApiErrorData>,

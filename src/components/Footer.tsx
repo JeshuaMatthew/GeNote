@@ -1,5 +1,3 @@
-import React from 'react';
-
 const Footer = () => {
   const bgColor = '#3a1d1d';
   const primaryTextColor = 'text-white';

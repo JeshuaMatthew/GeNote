@@ -2,7 +2,7 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import GenoteApi from "../utils/GenoteApi";
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { motion, AnimatePresence } from 'framer-motion'; // Import motion
 import { AxiosError } from "axios"; // Import AxiosError for typing
 

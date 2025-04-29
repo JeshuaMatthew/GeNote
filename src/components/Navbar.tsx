@@ -1,10 +1,9 @@
-import { useNavigate, Link } from "react-router-dom"; // Use Link for client-side routing
+import { Link } from "react-router-dom"; // Use Link for client-side routing
 import UserDropdownButton from "./UserDropDownButton";
 import { useAuth } from "../utils/AuthProvider";
 import { motion } from "framer-motion"; // Import motion
 
 const Navbar = () => {
-    const navigate = useNavigate(); // Still useful for programmatic navigation if needed
     const { isAuthenticated } = useAuth();
 
     // --- Animation Variants ---

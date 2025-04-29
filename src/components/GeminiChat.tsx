@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import  { useState, useEffect, useRef } from "react";
 import UserBubble from "./UserBubble";
 import GeminiBubble from "./GeminiBubble";
 import GeminiApi from "../utils/GeminiApi";
@@ -166,7 +166,7 @@ const GeminiChat = () => {
           // Return a context object with the snapshotted value
           return { previousHistory };
       },
-      onError: (err, chatId, context) => {
+      onError: (err) => {
           console.error("Failed to delete chat history:", err);
           setMutationError(`Error deleting chat: ${(err.response?.data as ApiErrorData)?.message || err.message}`);
       },
@@ -174,7 +174,7 @@ const GeminiChat = () => {
           // Always refetch after error or success:
           queryClient.invalidateQueries({ queryKey: ['chatHistory'] });
       },
-      onSuccess: (data, chatId) => {
+      onSuccess: (chatId) => {
           console.log("Chat history deleted successfully:", chatId);
           setMutationError(null); // Clear error on successful deletion
       },
