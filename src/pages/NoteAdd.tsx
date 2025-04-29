@@ -141,12 +141,6 @@ const NoteAdd: React.FC = () => {
         retry: false,
         staleTime: 5 * 60 * 1000,
         // Set error state if folder fetch fails *after* initial validation passed
-        onError: (err) => {
-            if (isInitialValidationDone && typeof folderId === 'number') {
-                const apiErrorMessage = err.response?.data?.message || err.response?.data?.error || err.response?.data?.detail;
-                setDisplayError(apiErrorMessage || err.message || "Failed to load folder details.");
-            }
-        }
     });
 
     const {
@@ -250,7 +244,6 @@ const NoteAdd: React.FC = () => {
                         defaultText={noteContent}
                         onTitleChange={handleTitleChange}
                         onContentChange={handleContentChange}
-                        readOnly={isLoadingFolder || isSaving} // Simplified readOnly logic
                     />
 
                     <motion.button

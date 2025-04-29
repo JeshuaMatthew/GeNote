@@ -240,7 +240,6 @@ const NoteEdit: React.FC = () => {
                          defaultText={noteContent}
                          onTitleChange={handleTitleChange}
                          onContentChange={handleContentChange}
-                         readOnly={isSaving || (isNoteFetchError && !errorMessage)}
                      />
                  </motion.div>
             ) : null}

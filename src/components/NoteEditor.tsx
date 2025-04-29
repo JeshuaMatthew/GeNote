@@ -1,6 +1,6 @@
 import { BlockTypeSelect, BoldItalicUnderlineToggles, CreateLink, InsertCodeBlock, InsertFrontmatter, InsertImage, InsertTable, InsertThematicBreak, ListsToggle, MDXEditor, UndoRedo, diffSourcePlugin, frontmatterPlugin, headingsPlugin, imagePlugin, linkDialogPlugin, listsPlugin, markdownShortcutPlugin, quotePlugin, sandpackPlugin, tablePlugin, thematicBreakPlugin, toolbarPlugin } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
-// Remove the import for '../toolbar.css' if it only contained styles we are replacing
+import  '../toolbar.css' 
 // import '../toolbar.css';
 import React, { useState, useEffect } from 'react';
 

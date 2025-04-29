@@ -2,7 +2,7 @@ import { motion, useInView } from 'framer-motion';
 import { useRef } from 'react';
 import GeminiImg from '../assets/Gemini.svg'
 
-const ScrollReveal = ({ children, once = true, threshold = 0.1, className = "", variants: propVariants, staggerChildren = 0, delayChildren = 0 }) => {
+const ScrollReveal = ({ children , once = true, threshold = 0.1, className = "", variants: propVariants, staggerChildren = 0, delayChildren = 0 }) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, amount: threshold });
 

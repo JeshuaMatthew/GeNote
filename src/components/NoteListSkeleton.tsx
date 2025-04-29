@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'; // Import motion
 
 // Define colors from your scheme for consistency
 const colorLightBg = '#FFEEEE'; // Base background - light pink/peach
-const colorMediumPlaceholder = '#f59393'; // Placeholder color - a medium shade from the scheme
+const colorMediumPlaceholder = '#F59393'; // Placeholder color - a medium shade from the scheme
 
 // Animation variants for individual cards
 const skeletonItemVariants = {

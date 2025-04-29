@@ -169,13 +169,6 @@ const GeminiChat = () => {
       onError: (err, chatId, context) => {
           console.error("Failed to delete chat history:", err);
           setMutationError(`Error deleting chat: ${(err.response?.data as ApiErrorData)?.message || err.message}`);
-          // If the mutation fails, use the context returned from onMutate to roll back
-          if (context?.previousHistory) {
-              const previousMessages: ChatMessage[] = context.previousHistory.data.map(item => ({
-                  id: item.id, userPrompt: item.prompt, aiAns: item.ans,
-              }));
-              setChatHistory(previousMessages);
-          }
       },
       onSettled: () => {
           // Always refetch after error or success:

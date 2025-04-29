@@ -1,7 +1,6 @@
 import { useForm, SubmitHandler } from "react-hook-form";
 import GenoteApi from "../utils/GenoteApi";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect } from "react";
 import { useNavigate } from "react-router";
 import Cookies from "js-cookie";
 import { jwtDecode } from "jwt-decode";
@@ -40,7 +39,7 @@ interface DecodedToken {
 
 const LoginBackend = async (data: UserData): Promise<AxiosResponse<AuthResponse>> => {
   // Explicitly type the potential error response
-  return await GenoteApi.post<AuthResponse, AxiosError<ApiErrorData>>("api/auth/login", data);
+  return await GenoteApi.post<AuthResponse>("api/auth/login", data);
 }
 
 // --- Helper Function ---
