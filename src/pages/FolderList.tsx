@@ -311,7 +311,7 @@ const FolderList: React.FC = () => {
         </div>
 
       <motion.div
-        className="flex flex-wrap gap-6 md:gap-8 mx-auto max-w-[800px] justify-center md:justify-start px-4"
+        className="flex flex-wrap gap-6 md:gap-8 mx-auto max-w-[1200px] justify-center md:justify-start px-4"
         variants={listVariants}
         initial="initial" // Optional: If list itself needs entry animation
         animate="animate"
