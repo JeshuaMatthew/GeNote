@@ -2,7 +2,7 @@ import React from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosResponse, AxiosError } from 'axios';
-import ReactMarkdown from 'react-markdown';
+import Markdown from 'markdown-to-jsx';
 import { motion } from 'framer-motion'; // Import motion
 
 import GenoteApi from '../utils/GenoteApi';
@@ -266,9 +266,9 @@ const NoteView: React.FC = () => {
                 className={`prose prose-lg max-w-none prose-stone text-[${colorText}] prose-headings:text-[${colorHeading}] prose-a:text-blue-600 hover:prose-a:text-blue-800 prose-strong:text-[${colorHeading}]`} // Added prose text/heading colors and link styling
             >
                 {/* Add 'break-words' class to handle long non-breaking strings */}
-                <ReactMarkdown className="break-words">
+                <Markdown className="break-words">
                     {noteData.body}
-                </ReactMarkdown>
+                </Markdown>
             </motion.div>
         </motion.div>
     );

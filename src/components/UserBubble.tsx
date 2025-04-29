@@ -1,6 +1,6 @@
 import React from 'react';
-import ReactMarkdown from "react-markdown";
 import { motion } from 'framer-motion'; // Import motion
+import Markdown from 'markdown-to-jsx';
 
 // Style constants
 const colorDark = '#A84C4C';
@@ -38,7 +38,7 @@ const UserBubble: React.FC<UserPrompt> = ({ prompt }) => { // Destructure prompt
         layout // Optional: Animate layout changes
     >
         {/* Styles for the inner bubble */}
-        <ReactMarkdown className={`
+        <Markdown className={`
             inline-block
             bg-[${colorDark}] text-white text-sm
             p-3 {/* Increased padding slightly */}
@@ -47,7 +47,7 @@ const UserBubble: React.FC<UserPrompt> = ({ prompt }) => { // Destructure prompt
             text-left {/* Ensure markdown content inside is left-aligned */}
         `}>
             {prompt}
-        </ReactMarkdown>
+        </Markdown>
     </motion.div>
   );
 }

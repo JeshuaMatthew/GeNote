@@ -1,6 +1,6 @@
 import React from 'react';
-import ReactMarkdown from "react-markdown";
 import { motion } from 'framer-motion'; // Import motion
+import Markdown from 'markdown-to-jsx';
 
 interface GeminiAns {
     Ans: string;
@@ -38,9 +38,9 @@ const GeminiBubble: React.FC<GeminiAns> = ({ Ans }) => { // Destructure Ans dire
         layout // Optional: Animate layout changes if size changes dynamically
     >
         {/* Keep ReactMarkdown inside, styling remains the same */}
-        <ReactMarkdown className={`inline-block bg-[#DEB7B7] text-[#612d2d] text-sm p-3 rounded-lg max-w-[80%] sm:max-w-[70%] prose prose-sm prose-stone`}>
+        <Markdown className={`inline-block bg-[#DEB7B7] text-[#612d2d] text-sm p-3 rounded-lg max-w-[80%] sm:max-w-[70%] prose prose-sm prose-stone`}>
             {Ans}
-        </ReactMarkdown>
+        </Markdown>
     </motion.div>
   );
 }
