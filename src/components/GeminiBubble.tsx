@@ -1,20 +1,48 @@
+import React from 'react';
 import ReactMarkdown from "react-markdown";
+import { motion } from 'framer-motion'; // Import motion
 
-const colorDark = '#A84C4C';
-const colorMedium = '#DEB7B7';
-
-interface GeminiAns{
-    Ans : string
+interface GeminiAns {
+    Ans: string;
 }
 
-const GeminiBubble : React.FC<GeminiAns> = (geminiAns) => {
+// Animation Variants for the bubble
+const bubbleVariants = {
+    hidden: {
+        opacity: 0,
+        scale: 0.85, // Start slightly smaller
+        y: 15,       // Start slightly lower
+    },
+    visible: {
+        opacity: 1,
+        scale: 1,
+        y: 0,
+        transition: {
+            duration: 0.4, // Animation duration
+            ease: "easeOut", // Easing function
+            // type: "spring", // Optional: Use spring physics
+            // stiffness: 150,
+            // damping: 15,
+        }
+    }
+};
+
+const GeminiBubble: React.FC<GeminiAns> = ({ Ans }) => { // Destructure Ans directly
   return (
-    <div className="mb-2 text-left">
-        <ReactMarkdown className={`inline-block bg-[${colorMedium}] text-[${colorDark}] text-sm p-2 rounded-lg max-w-[80%] sm:max-w-[70%] prose`}>
-        {geminiAns.Ans}
+    // Replace div with motion.div and apply variants
+    <motion.div
+        className="mb-2 text-left"
+        variants={bubbleVariants}
+        initial="hidden" // Start in the hidden state
+        animate="visible" // Animate to the visible state on mount
+        layout // Optional: Animate layout changes if size changes dynamically
+    >
+        {/* Keep ReactMarkdown inside, styling remains the same */}
+        <ReactMarkdown className={`inline-block bg-[#DEB7B7] text-[#612d2d] text-sm p-3 rounded-lg max-w-[80%] sm:max-w-[70%] prose prose-sm prose-stone`}>
+            {Ans}
         </ReactMarkdown>
-    </div>
-  )
+    </motion.div>
+  );
 }
 
-export default GeminiBubble
+export default GeminiBubble;

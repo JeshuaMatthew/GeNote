@@ -1,211 +1,231 @@
-import React, { useState, ChangeEvent, FormEvent, useEffect } from 'react';
-import GenoteApi, { setAuthTokenOnGenoteApi } from '../utils/GenoteApi';
-import { useParams } from 'react-router';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { set, useForm } from 'react-hook-form';
-import Cookies from 'js-cookie';
+import React from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { AxiosResponse, AxiosError } from 'axios';
+import { motion, AnimatePresence } from 'framer-motion'; // Import motion
+import { useAuth } from '../utils/AuthProvider';
+import GenoteApi from '../utils/GenoteApi';
 
-
-
-
-
-interface EditFormFields{
-  name : string;
-  email : string;
-  password : string;
-  id :  number
+// --- Interfaces ---
+interface UserData {
+  username: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
 }
 
-interface UserType{
-  user : EditFormFields
+// Define a type for API errors if needed (can be simple)
+interface ApiError {
+    message?: string;
+    // Add other potential error fields
 }
 
-
-  
-  
-  const BackendHandleEdit = async (id : string | undefined ,data : EditFormFields) =>{
-    setAuthTokenOnGenoteApi(Cookies.get('token'))
-    return await GenoteApi.put("api/users/"+ id, data);
+// --- API Call Function ---
+const BackendHandleGet = async (token: string | undefined): Promise<AxiosResponse<UserData>> => {
+  if (!token) {
+    throw new Error("Authentication token is required.");
   }
+  return await GenoteApi.get<UserData>("api/user/", {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+};
 
-  const BackendHandleGet = async (id : string | undefined) =>{
-    setAuthTokenOnGenoteApi(Cookies.get('token'))
-    return await GenoteApi.get<UserType>("api/users/" + id);
-  }
-
-
+// --- Style Constants ---
 const colorDark = '#A84C4C';
-const colorLight = '#FFEEEE';
+// const colorLight = '#FFEEEE'; // Not used directly in final render, maybe for skeleton
 const colorWhite = '#FFFFFF';
-const colorDarkHover = '#934242';
 const borderColor = 'border-gray-300';
 
-
-
-const Users: React.FC = () => {
-
-    const id = Cookies.get('userId')
-
-    const {register, setValue ,handleSubmit,formState : {errors}} = useForm<EditFormFields>()
-
-    const {mutate, isSuccess} = useMutation({
-        mutationFn : (data : EditFormFields) => BackendHandleEdit(id,data)
-      });
-
-    const getUserDetail = useQuery({
-        queryKey: ["userdata", id],
-        queryFn : () => BackendHandleGet(id)
-    })
-
-    const submitHandler = (data : EditFormFields) => {
-
-        mutate(data)
-    }
-
-    
-    const [isEditing, setIsEditing] = useState<boolean>(false);
-    
-    
-    
-    useEffect(() =>{
-        if(isEditing && getUserDetail.data?.data){
-            setValue("name", getUserDetail.data?.data.user.name);
-            setValue("email", getUserDetail.data?.data.user.email);
-        }
-    },[isEditing]);
-
-
-
-
-
-  
-
-  // --- Common Button Styles (unchanged) ---
-  const primaryButtonStyle = `
-    bg-[${colorDark}] hover:bg-[${colorDarkHover}] text-[${colorLight}]
-    font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline
-    transition duration-150 ease-in-out w-full
-  `;
-  const secondaryButtonStyle = `
-    bg-gray-300 hover:bg-gray-400 text-gray-800
-    font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline
-    transition duration-150 ease-in-out w-full
-  `;
-  const inputStyle = `
-    shadow appearance-none border ${borderColor} rounded-lg w-full
-    py-2 px-3 text-gray-950 leading-tight
-    focus:outline-none focus:shadow-outline
-  `;
-
-  // --- Base Transition Classes ---
-  // Apply this to both display and edit blocks
-  const transitionBaseClasses = `
-    transition-all duration-300 ease-in-out
-    absolute top-0 left-0 w-full
-  `;
-
-  if(!getUserDetail.isFetching){
-    return (
-      <div className={`min-h-screen bg-[${colorWhite}] p-4 md:p-8 flex justify-center items-center`}>
-        <div className={`w-full max-w-md bg-[${colorWhite}] rounded-lg p-6 md:p-8`}>
-  
-          {/* --- Icon and Header (unchanged) --- */}
-          <div className="mb-6 flex flex-col items-center">
-            {/* ... (icon and h1 code remains the same) ... */}
-             <div className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200 ">
-                <svg
-                  className="h-10 w-10 text-gray-500"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                  strokeWidth="1.5"
-                  stroke="none"
-                  aria-hidden="true"
-                >
-                  <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"
-                  />
-                </svg>
-            </div>
-            <h1 className={`text-xl md:text-2xl font-semibold text-[${colorDark}] text-center`}>
-              User Profile
-            </h1>
+// --- Skeleton Component ---
+const UserProfileSkeleton: React.FC = () => (
+    <div className={`min-h-screen bg-[${colorWhite}] p-4 md:p-8 flex justify-center items-center`}>
+      <div className={`w-full max-w-md bg-[${colorWhite}] rounded-lg shadow-md p-6 md:p-8 animate-pulse`}>
+        {/* Icon and Header Placeholder */}
+        <div className="mb-6 flex flex-col items-center">
+          <div className="mb-4 h-16 w-16 rounded-full bg-gray-300"></div>
+          <div className="h-6 w-1/2 rounded bg-gray-300"></div>
+        </div>
+        {/* Data Fields Placeholder */}
+        <div className="space-y-6"> {/* Increased spacing */}
+          {/* Username Placeholder */}
+          <div>
+            <div className="h-3 w-1/4 rounded bg-gray-200 mb-2"></div>
+            <div className="h-5 w-3/4 rounded bg-gray-300"></div>
           </div>
-          {/* --- End Icon and Header --- */}
-          {/* --- Container for Absolute Positioned Content --- */}
-          {/* Added 'relative' and 'min-h-[...]'. Adjust min-height as needed! */}
-          <div className="relative min-h-[380px]"> {/* <-- Adjust min-height */}
-  
-              {/* --- Display Mode --- */}
-              {/* Always rendered, controlled by opacity/transform/pointer-events */}
-              <div
-                className={`
-                  ${transitionBaseClasses}
-                  ${isEditing
-                    ? 'opacity-0 -translate-y-3 pointer-events-none' // Hidden state
-                    : 'opacity-100 translate-y-0'                 // Visible state
-                  }
-                  space-y-4 {/* Keep internal styles */}
-                `}
-                aria-hidden={isEditing} // Hide from accessibility tree when not visible
-              >
-                {/* Display content remains the same */}
-                <div>
-                  <label className={`block text-xs font-medium text-gray-600 mb-1`}>name</label>
-                  <p className="text-base text-gray-800 py-1">{getUserDetail.data?.data.user.name}</p>
-                </div>
-                <hr className={borderColor}/>
-                <div>
-                  <label className={`block text-xs font-medium text-gray-600 mb-1`}>Email</label>
-                  <p className="text-base text-gray-800 py-1">{getUserDetail.data?.data.user.email}</p>
-                </div>
-                <hr className={borderColor}/>
-                <div className="pt-6">
-                  <button onClick={() => setIsEditing(true)} className={primaryButtonStyle}>
-                    Edit Profile
-                  </button>
-                </div>
-              </div> 
-              <form
-                onSubmit={handleSubmit(submitHandler)}
-                className={`
-                  ${transitionBaseClasses}
-                   ${isEditing
-                     ? 'opacity-100 translate-y-0'                   // Visible state
-                     : 'opacity-0 translate-y-3 pointer-events-none' // Hidden state
-                   }
-                  space-y-4 {/* Keep internal styles */}
-                `}
-                aria-hidden={!isEditing} // Hide from accessibility tree when not visible
-              >
-               
-                <div>
-                  <label htmlFor="name" className={`block text-sm font-medium text-gray-700 mb-1`}>name</label>
-                  <input type="text" id="name" {...register("name",{required: "name is required."})} className={inputStyle} />
-                </div>
-                <div>
-                  <label htmlFor="email" className={`block text-sm font-medium text-gray-700 mb-1`}>Email</label>
-                  <input type="email" id="email" {...register("email",{required: "Email is required."})} className={inputStyle} />
-                </div>
-                <div>
-                  <label className={`block text-sm font-medium text-gray-700 mb-1`}>New Password <span className="text-xs text-gray-500">(Optional)</span></label>
-                  <input type="password" id="password"  {...register("password",{required: "Password is required."})} className={inputStyle} />
-                </div>
-                <div className="flex flex-col space-y-3 pt-4">
-                  <button type="submit" className={primaryButtonStyle}>Save Changes</button>
-                  <button type="button" onClick={() => setIsEditing(false)} className={secondaryButtonStyle}>Cancel</button>
-                </div>
-              </form> 
-  
+          <hr className={borderColor}/>
+          {/* Email Placeholder */}
+           <div>
+            <div className="h-3 w-1/4 rounded bg-gray-200 mb-2"></div>
+            <div className="h-5 w-3/4 rounded bg-gray-300"></div>
           </div>
-  
+           <hr className={borderColor}/>
         </div>
       </div>
-    );
+    </div>
+);
+
+// --- Animation Variants ---
+const pageVariants = {
+    initial: { opacity: 0 },
+    animate: { opacity: 1, transition: { duration: 0.5 } },
+    exit: { opacity: 0, transition: { duration: 0.3 } }
+};
+
+const cardVariants = {
+    initial: { opacity: 0, y: 30, scale: 0.98 },
+    animate: { opacity: 1, y: 0, scale: 1, transition: { duration: 0.5, ease: "easeOut" } },
+};
+
+const headerVariants = {
+    initial: { opacity: 0, y: -20 },
+    animate: { opacity: 1, y: 0, transition: { delay: 0.1, duration: 0.4, ease: "easeOut" } },
+};
+
+const dataContainerVariants = {
+    initial: {}, // Parent doesn't need initial animation itself
+    animate: { transition: { staggerChildren: 0.1, delayChildren: 0.2 } }, // Stagger children
+};
+
+const dataFieldVariants = {
+    initial: { opacity: 0, x: -15 },
+    animate: { opacity: 1, x: 0, transition: { duration: 0.3, ease: "easeOut" } },
+};
+
+const errorVariants = {
+    initial: { opacity: 0, y: -10, height: 0 },
+    animate: { opacity: 1, y: 0, height: 'auto', transition: { duration: 0.3 } },
+    exit: { opacity: 0, y: 5, height: 0, transition: { duration: 0.2 } }
+};
+
+// --- Main Component ---
+const Users: React.FC = () => {
+  const { getToken } = useAuth();
+
+  const {
+    data: response,
+    isLoading, // Use isLoading for initial load state
+    isFetching, // Use isFetching for background updates
+    isError,
+    error,
+  } = useQuery<AxiosResponse<UserData>, AxiosError<ApiError>>({ // Use specific error type
+    queryKey: ["userdata"],
+    queryFn: () => BackendHandleGet(getToken()),
+    enabled: !!getToken(),
+    // staleTime: 5 * 60 * 1000, // Optional: Adjust caching
+  });
+
+  const userData = response?.data;
+
+  // Helper to get error message
+  const getErrorMessage = (err: AxiosError<ApiError> | null): string => {
+      if (!err) return "An unknown error occurred.";
+      // Access potentially nested message if API wraps errors
+      const apiErrorMsg = (err.response?.data as ApiError)?.message;
+      return apiErrorMsg || err.message || "Failed to load user data.";
+  };
+
+  // Render Skeleton while loading for the first time
+  if (isLoading) {
+    return <UserProfileSkeleton />;
   }
-  
+
+  return (
+    <motion.div
+      className={`min-h-screen bg-[${colorWhite}] p-4 md:p-8 flex justify-center items-center`}
+      variants={pageVariants}
+      initial="initial"
+      animate="animate"
+      exit="exit"
+    >
+      <motion.div
+        className={`w-full max-w-md bg-[${colorWhite}] rounded-lg shadow-xl p-6 md:p-8`} // Enhanced shadow
+        variants={cardVariants} // Apply card animation
+        // No initial/animate needed here, handled by parent pageVariants
+      >
+
+        {/* Icon and Header */}
+        <motion.div
+            className="mb-8 flex flex-col items-center" // Increased margin
+            variants={headerVariants} // Apply header animation
+        >
+          <motion.div
+            className="mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gray-200"
+            whileHover={{ scale: 1.05 }} // Subtle hover on icon container
+           >
+            <svg
+              className="h-10 w-10 text-gray-500"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="currentColor"
+              viewBox="0 0 24 24"
+              strokeWidth="1.5"
+              stroke="none"
+              aria-hidden="true"
+            >
+              <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+            </svg>
+          </motion.div>
+          <h1 className={`text-xl md:text-2xl font-semibold text-[${colorDark}] text-center`}>
+            User Profile
+          </h1>
+          {isFetching && !isLoading && ( // Show subtle fetching indicator
+              <span className="text-xs text-gray-400 mt-1">Updating...</span>
+          )}
+        </motion.div>
+
+        {/* User Data Display Area */}
+        <motion.div
+            className="space-y-5" // Adjusted spacing
+            variants={dataContainerVariants} // Apply container for staggering
+            initial="initial" // Initial/Animate needed on container for stagger
+            animate="animate"
+        >
+          {/* --- Error Display --- */}
+          <AnimatePresence>
+            {isError && (
+              <motion.p
+                 variants={errorVariants} initial="initial" animate="animate" exit="exit"
+                 className="text-center text-red-600 bg-red-100 p-3 rounded border border-red-300"
+              >
+                Error: {getErrorMessage(error)}
+              </motion.p>
+            )}
+          </AnimatePresence>
+
+          {/* --- User Data --- */}
+          {!isError && userData && (
+            <>
+              {/* Username Field */}
+              <motion.div variants={dataFieldVariants}>
+                <label className={`block text-sm font-medium text-gray-600 mb-1`}>Username</label>
+                <p className="text-lg text-gray-800 py-1">{userData.username}</p> {/* Larger text */}
+              </motion.div>
+              <hr className={borderColor}/>
+              {/* Email Field */}
+              <motion.div variants={dataFieldVariants}>
+                <label className={`block text-sm font-medium text-gray-600 mb-1`}>Email</label>
+                <p className="text-lg text-gray-800 py-1">{userData.email}</p> {/* Larger text */}
+              </motion.div>
+              <hr className={borderColor}/>
+               {/* Optional: Member Since Field */}
+              <motion.div variants={dataFieldVariants}>
+                <label className={`block text-sm font-medium text-gray-600 mb-1`}>Member Since</label>
+                <p className="text-base text-gray-700 py-1">{new Date(userData.created_at).toLocaleDateString()}</p>
+              </motion.div>
+               <hr className={borderColor}/>
+            </>
+          )}
+          {/* Case: Success but no data */}
+           {!isLoading && !isError && !userData && (
+             <motion.p
+                variants={dataFieldVariants} // Can reuse variant
+                className="text-center text-gray-500"
+             >
+                User data not found.
+             </motion.p>
+           )}
+        </motion.div>
+      </motion.div>
+    </motion.div>
+  );
 };
 
 export default Users;
