@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useAuth } from "./AuthProvider";
 
 const GenoteApi = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
