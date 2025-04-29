@@ -1,4 +1,4 @@
-import { BlockTypeSelect, BoldItalicUnderlineToggles, CreateLink, InsertCodeBlock, InsertFrontmatter, InsertImage, InsertTable, InsertThematicBreak, ListsToggle, MDXEditor, UndoRedo, diffSourcePlugin, frontmatterPlugin, headingsPlugin, imagePlugin, linkDialogPlugin, listsPlugin, markdownShortcutPlugin, quotePlugin, sandpackPlugin, tablePlugin, thematicBreakPlugin, toolbarPlugin } from '@mdxeditor/editor';
+import { BlockTypeSelect, BoldItalicUnderlineToggles, CreateLink, InsertCodeBlock, InsertFrontmatter, InsertImage, InsertTable, InsertThematicBreak, ListsToggle, MDXEditor, UndoRedo, diffSourcePlugin, frontmatterPlugin, headingsPlugin, imagePlugin, linkDialogPlugin, listsPlugin, markdownShortcutPlugin, quotePlugin, tablePlugin, thematicBreakPlugin, toolbarPlugin } from '@mdxeditor/editor';
 import '@mdxeditor/editor/style.css';
 import  '../toolbar.css' 
 // import '../toolbar.css';
@@ -60,11 +60,11 @@ const NoteEditor: React.FC<NoteEditorAttribute> = (props) => {
     imagePlugin(),
     tablePlugin(),
     frontmatterPlugin(),
-    // Optional Plugins:
+    
     markdownShortcutPlugin(),
-    // Example diffSourcePlugin configuration (adjust as needed)
+  
     diffSourcePlugin({ viewMode: 'rich-text', diffMarkdown: props.defaultText }),
-    // sandpackPlugin(), // Include if you use Sandpack code blocks
+   
   ];
 
   return (

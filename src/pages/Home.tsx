@@ -1,30 +1,48 @@
-import { motion, useInView } from 'framer-motion';
-import { useRef } from 'react';
-import GeminiImg from '../assets/Gemini.svg'
+import { motion, useInView, Variants } from 'framer-motion';
+import { useRef, ReactNode } from 'react';
+import GeminiImg from '../assets/Gemini.svg';
 
-const ScrollReveal = ({ children , once = true, threshold = 0.1, className = "", variants: propVariants, staggerChildren = 0, delayChildren = 0 }) => {
+interface ScrollRevealProps {
+  children: ReactNode;
+  once?: boolean;
+  threshold?: number;
+  className?: string;
+  variants?: Variants;
+  staggerChildren?: number;
+  delayChildren?: number;
+}
+
+const ScrollReveal = ({
+  children,
+  once = true,
+  threshold = 0.1,
+  className = '',
+  variants: propVariants,
+  staggerChildren = 0,
+  delayChildren = 0,
+}: ScrollRevealProps) => {
   const ref = useRef(null);
   const isInView = useInView(ref, { once, amount: threshold });
 
-  const defaultVariants = {
+  const defaultVariants: Variants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
         duration: 0.7,
-        ease: "easeOut",
+        ease: 'easeOut',
         staggerChildren: staggerChildren,
-        delayChildren: delayChildren
-      }
-    }
+        delayChildren: delayChildren,
+      },
+    },
   };
 
   return (
     <motion.div
       ref={ref}
       initial="hidden"
-      animate={isInView ? "visible" : "hidden"}
+      animate={isInView ? 'visible' : 'hidden'}
       variants={propVariants || defaultVariants}
       className={className}
     >
@@ -33,46 +51,46 @@ const ScrollReveal = ({ children , once = true, threshold = 0.1, className = "",
   );
 };
 
-const heroContainerVariants = {
+const heroContainerVariants: Variants = {
   hidden: {},
   visible: {
-    transition: { staggerChildren: 0.25, delayChildren: 0.2 }
-  }
+    transition: { staggerChildren: 0.25, delayChildren: 0.2 },
+  },
 };
 
-const heroTextItemVariants = {
+const heroTextItemVariants: Variants = {
   hidden: { opacity: 0, y: 20 },
-  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } }
+  visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: 'easeOut' } },
 };
 
-const heroButtonVariants = {
+const heroButtonVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8, y: 10 },
-  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5, ease: "easeOut", delay: 0.1 } }
+  visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.5, ease: 'easeOut', delay: 0.1 } },
 };
 
-const heroBgVariants = {
+const heroBgVariants: Variants = {
     hidden: { opacity: 0, scale: 1.05 },
     visible: { opacity: 1, scale: 1, transition: { duration: 1.5, ease: "circOut" } }
 };
 
-const meetGeNoteVariants = {
+const meetGeNoteVariants: Variants = {
   hidden: { opacity: 0, scale: 0.8, y: 20 },
   visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.7, ease: "easeOut" } }
 };
 
-const featureSectionParentVariants = {
+const featureSectionParentVariants: Variants = {
     hidden: {},
     visible: {
         transition: { staggerChildren: 0.3 }
     }
 };
 
-const featureContentLeftVariants = {
+const featureContentLeftVariants: Variants = {
     hidden: { opacity: 0, x: -50, scale: 0.95 },
     visible: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.6, ease: [0.6, -0.05, 0.01, 0.99] } }
 };
 
-const featureContentRightVariants = {
+const featureContentRightVariants: Variants = {
     hidden: { opacity: 0, x: 50, scale: 0.95 },
     visible: { opacity: 1, x: 0, scale: 1, transition: { duration: 0.6, ease: [0.6, -0.05, 0.01, 0.99] } }
 };
@@ -161,4 +179,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;
