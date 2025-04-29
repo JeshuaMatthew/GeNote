@@ -2,6 +2,7 @@
   "files": [],
   "compilerOptions": {
     "jsx": "react-jsx",
+    "skipLibCheck": true
   },
   "references": [
     { "path": "./tsconfig.app.json" },
